@@ -10,11 +10,12 @@ $pdo = new PDO("pgsql:host={$_ENV['PG_HOST']};dbname={$_ENV['PG_DBNAME']}", $_EN
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
+
 // Создать 4 таблицы на postgresql:
 // продукты, категории, статистика, заказы, и заполнить стандартными столбцами на ваш выбор.
 
 /// [ ] создаём таблицы
-/// [ ] добавляем тригер
+/// [v] добавляем тригер
 /// [ ] добавляем в статистику инфу по заказам
 /// [ ] создаём таблицы
 /// [ ] создаём таблицы
@@ -29,7 +30,7 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS test (
 try{
     
     // Таблица категорий
-    $pdo->exec("DROP TABLE IF EXISTS categories;");
+    $pdo->exec("DROP TABLE IF EXISTS categories CASCADE;");
     $pdo->exec("CREATE TABLE IF NOT EXISTS categories (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
@@ -54,16 +55,18 @@ try{
     if($pdo->exec("CREATE TABLE IF NOT EXISTS orders (
                     id SERIAL PRIMARY KEY,
                     -- user_id INT NOT NULL,
-                    -- total_price DECIMAL(10, 2) NOT NULL,
+                    total_price DECIMAL(10, 2) NOT NULL,
                     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     status VARCHAR(50) DEFAULT 'pending',
                     purchase_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );")) echo "orders complete\n";
 
 
-    // Триггер на заказы
-    // $pdo->exec("DROP TABLE IF EXISTS products");
-    if($pdo->exec("CREATE FUNCTION upset_statistics()
+// Триггер на заказы
+// $pdo->exec("DROP TABLE IF EXISTS products");
+$pdo->exec("DROP FUNCTION IF EXISTS upset_statistics");
+$pdo->exec("DROP FUNCTION IF EXISTS upset_statistic");
+if($pdo->exec("CREATE FUNCTION upset_statistics()
                         RETURNS trigger AS
                         $$
                         BEGIN
@@ -74,14 +77,15 @@ try{
                         LANGUAGE plpgsql;
                         ")) echo "trigger appended\n";
 
-    if($pdo->exec("CREATE TRIGGER order_statistic_upset_trigger
+$pdo->exec("DROP TRIGGER IF EXISTS order_statistic_upset_trigger ON orders;");
+if($pdo->exec("CREATE TRIGGER order_statistic_upset_trigger
                     AFTER INSERT ON orders
                     FOR EACH ROW EXECUTE FUNCTION upset_statistics();
                         ")) echo "trigger appended\n";
 
 // AFTER INSERT OR UPDATE OR DELETE ON personal_salary
 //     FOR EACH ROW EXECUTE PROCEDURE salary_audit();
-
+// $pdo->exec("INSERT INTO orders(")
 
 
 
@@ -231,3 +235,10 @@ try{
 //     END IF;
 // END;
 // $$ LANGUAGE plpgsql;
+
+
+
+
+class order{
+
+}
