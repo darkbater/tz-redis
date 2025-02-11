@@ -1,22 +1,25 @@
 <?php
 include 'vendor/autoload.php';
 
-$error_protect = true;
-// error_reporting(E_ALL);
-// ini_set('display_errors','1');
+// Включает TTL, для удаления флаша в случае сбоя
+$enabled_ttl = true;
 
-// $redis = new Redis();
-// $redis->connect('127.0.0.1', 6379);
+// Имя флага, для защиты серипта от повторного запуска
+$flag_name = 'lock_script';
 
-# Work - * @method mixed  set($key, $value, $EX, $exSecs = null, $PX, $psMsecs = null, $flag = null)
+// Альтернативная библиотека
+// $client = new Redis();
+// $client->connect('127.0.0.1', 6379);
 
 $client = new Predis\Client('tcp://127.0.0.1:6379');
-$flag = 'lock_script';
 
-if($client->get($flag)) die("Already runned..\n");
-$client->set($flag, '1');
+if($client->get($flag_name)) die("Already runned..\n");
+$client->set($flag_name, '1');
 echo("locked\n");
-if($error_protect) $client->expire($flag, 6); 
+if($enabled_ttl) {
+    echo("set TTL\n");
+    $client->expire($flag_name, 6); 
+    }
 
 echo("process");
 for($i=0;$i<5;$i++){
@@ -24,6 +27,6 @@ for($i=0;$i<5;$i++){
     echo('.');
     }
 echo("\n");
-$client->del($flag);
-if(!$client->get($flag)) echo("unlocked\n");
+$client->del($flag_name);
+if(!$client->get($flag_name)) echo("unlocked\n");
 
