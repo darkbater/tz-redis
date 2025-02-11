@@ -8,33 +8,33 @@ include 'vendor/autoload.php';
 
 # Work - * @method mixed  set($key, $value, $EX, $exSecs = null, $PX, $psMsecs = null, $flag = null)
 
-
-
-
-
-echo('ok1');
-
-
-// phpinfo();
-
 $client = new Predis\Client('tcp://127.0.0.1:6379');
+$flag = 'lock_script';
 
-$client->set('lock_script', '1');
-$client->expire('lock_script', 5);  // TTL задается отдельно
+if($client->get($flag)) die('Already runned..');
 
-echo('lock_script contain:');
-echo($client->get('lock_script'));
+$client->set($flag, '1');
+$client->expire($flag, 6);  // TTL задается отдельно
 
-sleep(3);
-$newvalue=$client->get('lock_script');
+$client->del($flag);
 
-if(!$newvalue) echo('lock_script empty');
-else echo("lock_script contain {$newvalue}");
-sleep(3);
-$newvalue=$client->get('lock_script');
+echo("{$flag} contain:");
+echo($client->get($flag));
 
-if(!$newvalue) echo('lock_script empty');
-else echo("lock_script contain {$newvalue}");
+echo("{$flag} contain:");
+echo($client->get($flag));
+
+sleep(5);
+// $newvalue=$client->get($flag);
+
+// if(!$newvalue) echo($flag. ' empty');
+// else echo("$flag contain {$newvalue}");
+
+// sleep(3);
+// $newvalue=$client->get($flag);
+
+// if(!$newvalue) echo($flag. 'empty');
+// else echo("{$flag} contain {$newvalue}");
 
 
 
