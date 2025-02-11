@@ -13,6 +13,18 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // Создать 4 таблицы на postgresql:
 // продукты, категории, статистика, заказы, и заполнить стандартными столбцами на ваш выбор.
 
+/// [ ] создаём таблицы
+/// [ ] добавляем тригер
+/// [ ] добавляем в статистику инфу по заказам
+/// [ ] создаём таблицы
+/// [ ] создаём таблицы
+/// [ ] создаём таблицы
+/// [ ] создаём таблицы
+
+
+$pdo->exec("CREATE TABLE IF NOT EXISTS test (
+                id SERIAL PRIMARY KEY,
+                test VARCHAR(255) NOT NULL);");
 
 try{
     
@@ -31,13 +43,21 @@ try{
                 name VARCHAR(255) NOT NULL,
                 description TEXT,
                 price DECIMAL(10, 2) NOT NULL,
-                caegory_id INT REFERENCES categories(id) ON DELETE CASCADE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                category_id INT REFERENCES categories(id) ON DELETE CASCADE
                 );")) echo "products complete\n";
 
 
     // Таблица заказов
     // TODO таблица заказов
+    $pdo->exec("DROP TABLE IF EXISTS orders");
+    if($pdo->exec("CREATE TABLE IF NOT EXISTS orders (
+                    id SERIAL PRIMARY KEY,
+                    -- user_id INT NOT NULL,
+                    -- total_price DECIMAL(10, 2) NOT NULL,
+                    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    status VARCHAR(50) DEFAULT 'pending',
+                    purchase_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );")) echo "orders complete\n";
 
 
     // Триггер на заказы
@@ -46,13 +66,20 @@ try{
                         RETURNS trigger AS
                         $$
                         BEGIN
-                            --- 
+                            INSERT INTO test(test) values('test');
                             RETURN NEW;
                         END;
                         $$
                         LANGUAGE plpgsql;
                         ")) echo "trigger appended\n";
 
+    if($pdo->exec("CREATE TRIGGER order_statistic_upset_trigger
+                    AFTER INSERT ON orders
+                    FOR EACH ROW EXECUTE FUNCTION upset_statistics();
+                        ")) echo "trigger appended\n";
+
+// AFTER INSERT OR UPDATE OR DELETE ON personal_salary
+//     FOR EACH ROW EXECUTE PROCEDURE salary_audit();
 
 
 
