@@ -36,6 +36,24 @@ try{
                 );")) echo "products complete\n";
 
 
+    // Таблица заказов
+    // TODO таблица заказов
+
+
+    // Триггер на заказы
+    // $pdo->exec("DROP TABLE IF EXISTS products");
+    if($pdo->exec("CREATE FUNCTION upset_statistic()
+                        RETURNS trigger AS
+                        $$
+                        BEGIN
+                            --- 
+                            RETURN NEW;
+                        END;
+                        $$
+                        LANGUAGE plpgsql;
+                        ")) echo "trigger appended\n";
+
+
 
 
 
@@ -141,3 +159,47 @@ try{
 // END;
 // $$ LANGUAGE plpgsql;
 
+# https://help.sweb.ru/postgresql-triggery-sozdanie-udalenie-primery_1396.html
+// Базовый синтаксис для создания триггерной функции:
+
+// CREATE FUNCTION имя_функции()
+// RETURNS trigger AS
+// $$
+// BEGIN
+//     тело функции;
+//     RETURN [NEW|OLD|NULL];
+// END;
+// $$
+// LANGUAGE plpgsql;
+
+
+
+# https://zxmd.wordpress.com/2010/11/04/triggers-pgsql/
+
+// CREATE OR REPLACE FUNCTION add_to_log() RETURNS TRIGGER AS $$
+// DECLARE
+//     mstr varchar(30);
+//     astr varchar(100);
+//     retstr varchar(254);
+// BEGIN
+//     IF    TG_OP = 'INSERT' THEN
+//         astr = NEW.name;
+//         mstr := 'Add new user ';
+//         retstr := mstr || astr;
+//         INSERT INTO logs(text,added) values (retstr,NOW());
+//         RETURN NEW;
+//     ELSIF TG_OP = 'UPDATE' THEN
+//         astr = NEW.name;
+//         mstr := 'Update user ';
+//         retstr := mstr || astr;
+//         INSERT INTO logs(text,added) values (retstr,NOW());
+//         RETURN NEW;
+//     ELSIF TG_OP = 'DELETE' THEN
+//         astr = OLD.name;
+//         mstr := 'Remove user ';
+//         retstr := mstr || astr;
+//         INSERT INTO logs(text,added) values (retstr,NOW());
+//         RETURN OLD;
+//     END IF;
+// END;
+// $$ LANGUAGE plpgsql;
