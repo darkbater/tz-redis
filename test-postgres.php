@@ -14,10 +14,4 @@ echo(__DIR__);
 
 // echo($PG_HOST.$PG_DBNAME.$PG_USER.$PG_PASSWORD);
 
-echo "aaa";
-
-// PG_HOST = localhost
-// PG_DBNAME = 'test'
-// PG_USER = 'test'
-// PG_PASSWORD = 'test'
-
+// echo "aaa";
