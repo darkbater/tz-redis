@@ -1,7 +1,9 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors','1');
 include 'vendor/autoload.php';
+
+$error_protect = true;
+// error_reporting(E_ALL);
+// ini_set('display_errors','1');
 
 // $redis = new Redis();
 // $redis->connect('127.0.0.1', 6379);
@@ -11,42 +13,17 @@ include 'vendor/autoload.php';
 $client = new Predis\Client('tcp://127.0.0.1:6379');
 $flag = 'lock_script';
 
-if($client->get($flag)) die('Already runned..');
-
+if($client->get($flag)) die("Already runned..\n");
 $client->set($flag, '1');
-$client->expire($flag, 6);  // TTL задается отдельно
+echo("locked\n");
+if($error_protect) $client->expire($flag, 6); 
 
+echo("process");
+for($i=0;$i<5;$i++){
+    sleep(1);
+    echo('.');
+    }
+echo("\n");
 $client->del($flag);
-
-echo("{$flag} contain:");
-echo($client->get($flag));
-
-echo("{$flag} contain:");
-echo($client->get($flag));
-
-sleep(5);
-// $newvalue=$client->get($flag);
-
-// if(!$newvalue) echo($flag. ' empty');
-// else echo("$flag contain {$newvalue}");
-
-// sleep(3);
-// $newvalue=$client->get($flag);
-
-// if(!$newvalue) echo($flag. 'empty');
-// else echo("{$flag} contain {$newvalue}");
-
-
-
-// $client->get
-
-if($client) echo('ok');
-
-
-
-
-
-
-
-
+if(!$client->get($flag)) echo("unlocked\n");
 
