@@ -44,15 +44,8 @@ try{
                 name VARCHAR(255) NOT NULL,
                 description TEXT,
                 price DECIMAL(10, 2) NOT NULL,
-                category_id INT NOT NULL,
-                CONSTRAINT fk_category
-                    FOREIGN KEY (category_id)
-                    REFERENCES categories(id)
-                    ON DELETE CASCADE
-
-                -- category_id INT REFERENCES categories(id) ON DELETE CASCADE
+                category_id INT REFERENCES categories(id) ON DELETE CASCADE
                 );")) echo "products complete\n";
-
 
     // Таблица заказов
     // TODO таблица заказов
@@ -241,6 +234,24 @@ if($pdo->exec("CREATE TRIGGER order_statistic_upset_trigger
 // END;
 // $$ LANGUAGE plpgsql;
 
+
+# https://stackoverflow.com/questions/36359440/postgresql-insert-on-conflict-update-upsert-use-all-excluded-values
+// Обработка конфликтов!!! ЕСЛИ СТАТИСТИКА УЖЕ НАЧАЛА СОБИРАТЬСЯ
+// INSERT INTO tablename (id, username, password, level, email, update_count) 
+
+// -- if id doesn't exist, do insert
+// VALUES (1, 'John', 'qwerty', 5, 'john@mail.com', 0) 
+
+// -- how to check for duplicates (more versatile: could use any unique index here)
+// ON CONFLICT (id) 
+// DO UPDATE 
+// SET 
+//   -- update duplicate clause
+//   username=EXCLUDED.username, -- references proposed insertion row
+//   password=EXCLUDED.password,
+//   level=EXCLUDED.level,
+//   email=EXCLUDED.email,
+//   update_count=tablename.update_count+1 -- reference existing row
 
 
 
