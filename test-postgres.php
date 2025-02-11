@@ -43,7 +43,8 @@ try{
                 name VARCHAR(255) NOT NULL,
                 description TEXT,
                 price DECIMAL(10, 2) NOT NULL,
-                category_id INT REFERENCES categories(id) ON DELETE CASCADE
+                category_id INT REFERENCES categories(id)
+                -- category_id INT REFERENCES categories(id) ON DELETE CASCADE
                 );")) echo "products complete\n";
 
 
@@ -62,7 +63,7 @@ try{
 
     // Триггер на заказы
     // $pdo->exec("DROP TABLE IF EXISTS products");
-    if($pdo->exec("CREATE FUNCTION upset_statistic()
+    if($pdo->exec("CREATE FUNCTION upset_statistics()
                         RETURNS trigger AS
                         $$
                         BEGIN
