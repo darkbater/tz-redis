@@ -3,19 +3,18 @@ include 'vendor/autoload.php';
 // echo(__DIR__);
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
+// var_dump($_ENV);
 // print("pgsql:host={$_ENV['PG_HOST']};dbname={$_ENV['PG_DBNAME']}". $_ENV['PG_USER']. $_ENV['PG_PASSWORD']);
 
 $pdo = new PDO("pgsql:host={$_ENV['PG_HOST']};dbname={$_ENV['PG_DBNAME']}", $_ENV['PG_USER'], $_ENV['PG_PASSWORD']);
 
 
-// var_dump($_ENV);
+// Создать 4 таблицы на postgresql:
+// продукты, категории, статистика, заказы, и заполнить стандартными столбцами на ваш выбор.
 
-// $PG_HOST    = getenv('PG_HOST');
-// $PG_DBNAME  = getenv('PG_DBNAME');
-// $PG_USER    = getenv('PG_USER');
-// $PG_PASSWORD= getenv('PG_PASSWORD');
+// В таблице Заказы добавить колонку с временем покупки.
 
+// Вам необходимо написать триггер на таблицу с заказами:
+// при добавлении новой строки в таблицу с заказами, собирать статистику сколько товаров
+// и какой категории было куплено за день.
 
-// echo($PG_HOST.$PG_DBNAME.$PG_USER.$PG_PASSWORD);
-
-// echo "aaa";
